@@ -77,10 +77,10 @@ debug=0;
 
 echo ""
 
-if grep -q " " $PHBOOK; then
-    echo -e "${LIGHT_RED}ERROR:${WHITE} The phonebook contains spaces! This is not acceptable. Separate fields by '|' instead${NO_COLOUR}"
-    exit
-fi;
+#if grep -q " " $PHBOOK; then
+#    echo -e "${LIGHT_RED}ERROR:${WHITE} The phonebook contains spaces! This is not acceptable. Separate fields by '|' instead${NO_COLOUR}"
+#    exit
+#fi;
 
 for i in `cat $PHBOOK`; do
     echo ""
@@ -94,7 +94,7 @@ for i in `cat $PHBOOK`; do
 	echo -e "${LIGHT_BLUE}Sending SMS to $number ${NO_COLOUR}"
 	echo -e "------------------------- Sending SMS to $number -------------------" >> smssend.err;
 	echo -e "Arguments: $inp1, $inp2, $inp3" >> smssend.err
-	CMD="cat $SMSFILE | sed \"s <1> $inp1 g;s <2> $inp2 g;s <3> $inp3 g;\" | gnokii --sendsms $number 2>> smssend.err 1>> gnokii.out"
+	CMD="cat $SMSFILE | sed \"s|<1>|$inp1|g;s|<2>|$inp2|g;s|<3>|$inp3|g;\" | gnokii --sendsms $number 2>> smssend.err 1>> gnokii.out"
 	if test $debug -eq "0"; then echo -e "  ${LIGHT_CYAN}Invoking:${NO_COLOUR} $CMD"; fi;
 	bash -c "$CMD"
 	suc=$?
