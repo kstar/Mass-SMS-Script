@@ -73,26 +73,44 @@ echo -e "##################### " `date` " ####################" >> smssend.err
 
 count=0
 
+debug=0;
+
+echo ""
+
+if grep -q " " $PHBOOK; then
+    echo -e "${LIGHT_RED}ERROR:${WHITE} The phonebook contains spaces! This is not acceptable. Separate fields by '|' instead${NO_COLOUR}"
+    exit
+fi;
+
 for i in `cat $PHBOOK`; do
-	suc="1"
-	while [ $suc -ne "0" ]; do
-		echo -e "${LIGHT_BLUE}Sending SMS to $i ${NO_COLOUR}"
-		echo -e "------------------------- Sending SMS to $i -------------------" >> smssend.err;
-		CMD="cat $SMSFILE | gnokii --sendsms $i 2>> smssend.err 1>> gnokii.out"
-		echo -e "  Invoking command: $CMD"
-		bash -c "$CMD"
-		suc=$?
-		if [ $suc -ne "0" ]; then
-			echo -e "     ${LIGHT_RED}[###ERROR###]:${NO_COLOUR} Looks like sending SMS to $i failed. "
-			echo -e "     Please see smssend.err and gnokii.out for details.  "
-			echo -e "     Will retry sending SMS to number $i after 1 second. "
-			sleep 1
-		else
-			echo -e "     ${LIGHT_GREEN}[  SUCCESS  ]:${NO_COLOUR} GNOKII returned Success in sending."
-		fi
-	done;
-	count=$(($count + 1))
+    echo ""
+    if [ $debug -eq "0" ]; then echo -e "${YELLOW}Phone book line:${NO_COLOUR} $i"; fi;
+    suc="1"
+    number=`echo $i | awk -F \| '{print $1}'`
+    inp1=`echo $i | awk -F \| '{print $2}'`
+    inp2=`echo $i | awk -F \| '{print $3}'`
+    inp3=`echo $i | awk -F \| '{print $4}'`
+    while [ $suc -ne "0" ]; do
+	echo -e "${LIGHT_BLUE}Sending SMS to $number ${NO_COLOUR}"
+	echo -e "------------------------- Sending SMS to $number -------------------" >> smssend.err;
+	echo -e "Arguments: $inp1, $inp2, $inp3" >> smssend.err
+	CMD="cat $SMSFILE | sed \"s <1> $inp1 g;s <2> $inp2 g;s <3> $inp3 g;\" | gnokii --sendsms $number 2>> smssend.err 1>> gnokii.out"
+	if test $debug -eq "0"; then echo -e "  ${LIGHT_CYAN}Invoking:${NO_COLOUR} $CMD"; fi;
+	bash -c "$CMD"
+	suc=$?
+	if [ $suc -ne "0" ]; then
+	    echo -e "     ${LIGHT_RED}[###ERROR###]:${NO_COLOUR} Looks like sending SMS to ${LIGHT_BLUE}$number${NO_COLOUR} failed. "
+	    echo -e "     Please see smssend.err and gnokii.out for details.  "
+	    echo -e "     Will retry sending SMS to number ${LIGHT_BLUE}$number${NO_COLOUR} after 1 second. "
+	    sleep 1
+	else
+	    echo -e "     ${LIGHT_GREEN}[  SUCCESS  ]:${NO_COLOUR} GNOKII returned Success in sending."
+	fi
+    done;
+    count=$(($count + 1))
 done;
+
+echo ""
 
 echo -e " ============================================================================="
 echo -e "| ${LIGHT_GREEN}Finished requesting gnokii to send SMS to all phone numbers in $PHBOOK, or${NO_COLOUR}   |"
