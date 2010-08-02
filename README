@@ -13,5 +13,53 @@ The scripts invoke gnokii repeatedly to send SMS to each number in a
 phone book. The scripts are error tolerant, in the sense that it does
 not give up until the SMS is sent to a given number.
 
+
+Using the Script
+================
+
+To use the script, create the phone book file and the SMS text file
+first.
+
+By default, the script looks for a phone book file called 'phbook' in
+the working directory. The phone book file should have the phone
+number as the first entry. 'Arguments' can be written as fields
+separated by '|'. They _may not contain spaces_ as of this version. An
+example entry would thus look like:
+
+98452723489|Anandan|4323
+
+Up to three argument fields may be specified.
+
+The default SMS file is SMS.txt in the working directory. SMS.txt
+contains the SMS in plain text. The arguments are specified by <1>,
+<2> and <3>. The script replaces these by the appropriate arguments
+picked up from the phone book. An example SMS.txt would look like:
+
+Dear <1>, your registration number is <2>.
+
+There is no check that the SMS size is under 140 characters. Please
+ensure that you check that it is < 140 chars after replacing <1>
+etc. with the longest arguments.
+
+Once these are set up, run the script by doing ./script.sh
+
+You may need to chmod 755 script.sh if you get a permission denied
+error.
+
+
+Logging and Errors
+==================
+
+Please watch the console for important output. Colours highlight
+important messages, if you have a terminal that supports colour.
+
+The file gnokii.out contains the output of gnokii. The file
+smssend.err contains any errors logged during the process of sending
+SMS.
+
+
+Licensing Information for this Document
+=======================================
+
 This document is licensed under the GNU General Public License v2.0
 This document is Copyright (c) 2010 Akarsh Simha <akarshsimha@gmail.com>
