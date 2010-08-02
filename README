@@ -1,0 +1,17 @@
+This project is licensed under the GNU General Public License v2.0 or
+any later version at your choice.
+
+The scripts in this project are Copyright (c) 2009-2010 Akarsh Simha
+<akarshsimha@gmail.com> and Prashanth M G <prasha1982@gmail.com>
+
+The purpose of this project is to enable mass sending of SMS
+notifications to a phonebook without having an SMS gateway. This is
+ideal for small volume messaging, with less than 1000 people, where
+buying a gateway would be overkill.
+
+The scripts invoke gnokii repeatedly to send SMS to each number in a
+phone book. The scripts are error tolerant, in the sense that it does
+not give up until the SMS is sent to a given number.
+
+This document is licensed under the GNU General Public License v2.0
+This document is Copyright (c) 2010 Akarsh Simha <akarshsimha@gmail.com>
